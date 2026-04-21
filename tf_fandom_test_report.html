@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TF家族粉圈生存指南：你在18楼拿的是什么剧本？</title>
+    <style>
+        :root {
+            --primary-color: #ff9a9e;
+            --secondary-color: #fecfef;
+            --bg-color: #fff9f9;
+            --text-color: #2d3436;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 0 25px rgba(255,154,158,0.15);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .banner-img {
+            width: 100%;
+            max-width: 700px;
+            height: auto;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(255, 154, 158, 0.4);
+            transition: transform 0.3s;
+        }
+        
+        .banner-img:hover {
+            transform: scale(1.02);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 26px;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        p.subtitle {
+            color: #636e72;
+            font-size: 15px;
+            letter-spacing: 0.5px;
+            line-height: 1.8;
+            padding: 0 20px;
+        }
+
+        /* 答题区 */
+        #quiz-section {
+            display: none;
+            flex-grow: 1;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #f1f2f6;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #ff9a9e, #fecfef);
+            width: 0%;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .question-card {
+            background: #fff;
+            padding: 10px 0 30px 0;
+            animation: slideIn 0.4s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .question-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 25px;
+            color: #2d3436;
+            line-height: 1.6;
+            padding-left: 15px;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .option {
+            display: block;
+            width: 100%;
+            padding: 18px 20px;
+            margin-bottom: 15px;
+            background: #fdfbfb;
+            border: 2px solid #f1f2f6;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 15px;
+            text-align: left;
+            box-sizing: border-box;
+            line-height: 1.5;
+            color: #4a4a4a;
+        }
+
+        .option:hover {
+            background: #fff0f5;
+            border-color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(255,154,158,0.2);
+        }
+
+        /* 结果区 */
+        #result-section {
+            display: none;
+            text-align: center;
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-title {
+            font-size: 20px;
+            color: #636e72;
+            margin: 20px 0 10px 0;
+        }
+
+        .result-type {
+            font-size: 42px;
+            font-weight: 900;
+            background: -webkit-linear-gradient(45deg, #ff7675, #ffb8b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 10px 0;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 15px rgba(255,154,158,0.3);
+        }
+
+        /* 深度分析卡片样式 */
+        .analysis-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 25px 0;
+            text-align: left;
+            border: 1px solid #ffeaa7;
+            box-shadow: 0 4px 20px rgba(255,154,158,0.1);
+        }
+        
+        .analysis-card h4 {
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 18px;
+            border-bottom: 1px dashed #fecfef;
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .analysis-card h4::before {
+            content: "✨";
+            margin-right: 8px;
+        }
+
+        .analysis-content {
+            font-size: 15px;
+            color: #2d3436;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .tag {
+            background: #fff0f5;
+            color: #ff7675;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .radar-box {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+            gap: 12px;
+            background: #fdfbfb;
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .dimension {
+            background: #fff;
+            padding: 8px 12px;
+            border-radius: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            font-weight: bold;
+            font-size: 13px;
+            border: 1px solid #f1f2f6;
+            color: #636e72;
+        }
+
+        .dimension span {
+            color: var(--primary-color);
+            margin-left: 5px;
+        }
+
+        /* 按钮 */
+        .btn {
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+            color: white;
+            border: none;
+            padding: 16px 50px;
+            font-size: 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(255, 154, 158, 0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 154, 158, 0.6);
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 15px; }
+            h1 { font-size: 22px; }
+            .option { font-size: 14px; padding: 15px; }
+            .result-type { font-size: 32px; }
+            .question-title { font-size: 16px; }
+            .analysis-card { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 封面区 -->
+        <header id="home-section">
+            <img src="https://p-mira-img-sign-sgnontt.byteintl.net/tos-mya-i-xobrcjvdq7/b692ef70be5c455f96a87f352bdbdafb.jpeg~tplv-xobrcjvdq7-image-jpeg.jpeg?lk3s=3523e930&x-orig-authkey=miraorigin&x-orig-expires=1808067600&x-orig-sign=IRxXMJsdPV7Z2Jm5b703La7Hluo%3D" alt="TF家族粉丝成分测试" class="banner-img">
+            <h1>你在18楼，拿的是什么剧本？</h1>
+            <p class="subtitle">在这个装满少年汗水、眼泪、梦想与抓马的养成系宇宙里，有人披荆斩棘，有人岁月静好，有人拿着爆米花前排吃瓜。<br><br><b>点开这个测试，看看你在这场大型养成真人秀里，究竟扮演着怎样的角色。</b></p>
+            
+            <button class="btn" onclick="startQuiz()">推开练习室的门 (共12题)</button>
+        </header>
+
+        <!-- 答题区 -->
+        <div id="quiz-section">
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+            <div class="question-card">
+                <div class="question-title" id="question-text">问题加载中...</div>
+                <div id="options-container">
+                    <!-- 选项由JS渲染 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 结果区 -->
+        <div id="result-section">
+            <h2 class="result-title">经过12次灵魂拷问，你的专属剧本是：</h2>
+            <div class="result-type" id="result-name">【热血护崽妈】</div>
+            
+            <div class="radar-box">
+                <div class="dimension">情感波段：<span id="dim-1">A</span></div>
+                <div class="dimension">雷达范围：<span id="dim-2">C</span></div>
+                <div class="dimension">输出功率：<span id="dim-3">E</span></div>
+                <div class="dimension">燃烧热量：<span id="dim-4">P</span></div>
+            </div>
+            
+            <!-- 深度分析区 -->
+            <div class="analysis-card">
+                <h4>剧本标签</h4>
+                <div class="tag-container" id="result-tags">
+                    <!-- 动态加载标签 -->
+                </div>
+                
+                <h4>剧情梗概 (你在饭圈的行为模式)</h4>
+                <div class="analysis-content" id="result-desc1">加载中...</div>
+                
+                <h4>内心独白 (你的心理驱动力)</h4>
+                <div class="analysis-content" id="result-desc2">加载中...</div>
+                
+                <h4>给你的追星处方笺</h4>
+                <div class="analysis-content" id="result-desc3">加载中...</div>
+
+                <h4 style="color: #ff9f43; margin-top: 15px;">👑 老板锐评</h4>
+                <div class="analysis-content" id="result-feizong" style="background-color: #fff9f0; border-left: 4px solid #ff9f43; color: #d35400; font-weight: bold; font-style: italic;">加载中...</div>
+            </div>
+            
+            <button class="btn" onclick="location.reload()">再走一次花路</button>
+            <p style="margin-top: 20px; color: #b2bec3; font-size: 12px;">长按截图保存你的深度分析报告，发给同担测测默契度吧！</p>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // 维度1：A(感性共情) vs O(理智旁观)
+            {
+                text: "1. 某天深夜，公司突然释出了一段长达半小时的纪录片。物料进行到第25分钟时，你推因为高强度的排练崩溃坐在角落抹眼泪，此时在屏幕前的你：",
+                options: [
+                    { text: "眼泪已经先一步掉下来了。隔着屏幕疯狂想给他塞糖，觉得全世界都欠他一个拥抱，心疼得一晚上睡不着。", type: 'A', weight: 2 },
+                    { text: "倒吸一口凉气，赶紧把这段发到超话：“宝宝别哭，你已经做得很好了！”然后把这段配上催泪BGM剪出来。", type: 'A', weight: 1 },
+                    { text: "表情凝重，但很快恢复理智。心想：做爱豆哪有不吃苦的？扛过这段崩溃期，他的舞台张力绝对能上一个台阶。", type: 'O', weight: 2 },
+                    { text: "一边看着他哭，一边顺手把进度条拉回前两分钟，仔细复盘到底是哪个舞蹈动作（或者哪句高音）把他逼崩溃的。", type: 'O', weight: 1 } 
+                ]
+            },
+            {
+                text: "2. 跨年夜，家族三代同堂。当历代祖传的《街舞少年》前奏响起，三代人手拉手走到舞台中央时，你的第一感觉是：",
+                options: [
+                    { text: "“我的青春在这一刻具象化了！”直接破防大哭，脑子里像走马灯一样闪过他们从小土豆长成大帅哥的画面。", type: 'A', weight: 2 },
+                    { text: "眼眶微红，觉得这种“一代传一代”的仪式感真的是十八楼独有的浪漫，被这股巨大的宿命感击中了。", type: 'A', weight: 1 },
+                    { text: "战术后仰，开始用挑剔的耳朵听这次是谁开了全麦、谁的和声最稳，顺便对比一下和去年跨年舞台的差异。", type: 'O', weight: 2 },
+                    { text: "津津有味地观察舞台走位，分析今年的站位安排是不是暗示了公司明年的资源倾斜方向。", type: 'O', weight: 1 }
+                ]
+            },
+            {
+                text: "3. 你的室友是个现充（不追星的人），某天她指着海报上的几个弟弟真诚发问：“这几个人长得不是一模一样吗？”你会：",
+                options: [
+                    { text: "感觉自己被挑衅了！立刻翻出相册里珍藏的“神级怼脸直拍”，按头让她感受：“你看这个桃花眼！你看这个下颌线！哪里一样了！”", type: 'A', weight: 2 },
+                    { text: "像个慈爱的老母亲，拉着她坐下，充满感情地讲起你入坑那个晚上的心路历程，试图用真情实感打动她。", type: 'A', weight: 1 },
+                    { text: "极其冷静地掏出一份早就准备好的“安利Excel/长图”，里面详尽地罗列了每个人的MBTI、担当、音色特点和代表作。", type: 'O', weight: 2 },
+                    { text: "懒得废话，直接甩给她一个B站播放量最高的“三分钟教你认清TF家族”的搞笑科普视频，让她自己补课。", type: 'O', weight: 1 }
+                ]
+            },
+            // 维度2：C(家族博爱) vs F(专注自家)
+            {
+                text: "4. 经典大物料《夏日运动会》开播。在某个混战环节中，你推不小心被前排某位大势弟弟的道具砸到/波及，弹幕瞬间开始吵架。此时的你：",
+                options: [
+                    { text: "大局观拉满！立刻在超话呼吁大家专注自家物料，小孩子玩闹没控制好力度很正常，别被有心人带了节奏破坏家族和谐。", type: 'C', weight: 2 },
+                    { text: "觉得两边都是被公司剪辑坑了。明明前一秒俩人还在搭肩笑，下一秒就剪成修罗场，这破公司就知道吸血虐粉！", type: 'C', weight: 1 },
+                    { text: "心疼得要死，火冒三丈。平时资源被抢就算了，玩个游戏还要被欺负？立刻截图去对方超话讨个说法，必须道歉！", type: 'F', weight: 2 },
+                    { text: "极其护短且记仇。虽然表面不发作，但在心里给那位弟弟和他的粉丝狠狠记上一笔，以后相关投票绝不手软。", type: 'F', weight: 1 }
+                ]
+            },
+            {
+                text: "5. 公司又搞跨年“大乱炖”了。之前曾经大势但后来“be得很难看”的一对双人CP，竟然被安排在同一个机位前互动互动，你的真实心理是：",
+                options: [
+                    { text: "直接翻白眼。当年正主避嫌避得恨不得中间隔条银河，现在看人家有热度了又来按头营业，这口过期糖谁爱吃谁吃！", type: 'F', weight: 2 },
+                    { text: "只盯着我推绝美的脸蛋和舞台表现。旁边站的是前同事还是谁都不重要，抱走我家独美，别蹭！", type: 'F', weight: 1 },
+                    { text: "DNA动了！一边骂公司不做人，一边拿着放大镜一帧一帧地找两人眼神拉丝的证据，死去的回忆突然攻击我！", type: 'C', weight: 2 },
+                    { text: "觉得修罗场也是一种节目效果啊。大家都是同事，成年人逢场作戏罢了，看个热闹挺好玩的，甚至想给他们点一首《体面》。", type: 'C', weight: 1 }
+                ]
+            },
+            {
+                text: "6. 惊天大瓜！深夜突然爆出同公司某位平时树立“乖巧学霸”人设的队友，疑似有“私联/恋爱爆雷”的负面热搜。作为路过吃瓜的你：",
+                options: [
+                    { text: "警铃大作！立刻彻查我推最近的行程表和交友圈，甚至想去庙里给他求个平安符，只求他专注事业别塌房！", type: 'F', weight: 2 },
+                    { text: "冷笑一声，早就看出那小子面相不老实了。赶紧连夜组织粉丝控评，坚决要把我推和这个“劣迹队友”物理切割。", type: 'F', weight: 1 },
+                    { text: "一声叹息。养成系最怕这种事了，不仅当事人前途尽毁，整个团的口碑都会被拉下水，为了另外几个无辜的孩子感到不值。", type: 'C', weight: 2 },
+                    { text: "冲在吃瓜第一线！在各大论坛疯狂扒细节、对时间线。顺便吃瓜吃到自己家，觉得十八楼的连环瓜比电视剧还精彩。", type: 'C', weight: 1 }
+                ]
+            },
+            // 维度3：E(冲锋表达) vs I(岁月静好)
+            {
+                text: "7. 打歌舞台的海报释出了，但你推这套衣服丑得简直像得罪了造型师，不仅颜色死亡还暴露了身材短板。你会：",
+                options: [
+                    { text: "两眼一黑，血压飙升！立刻在粉丝群里吹响集结号，带上统一的话术和广场图，去官博底下艾特造型师要个说法。", type: 'E', weight: 2 },
+                    { text: "气笑了，截图发朋友圈或微博，用极其辛辣幽默的语言全方位吐槽这套造型，惹得大家哈哈大笑跟着一起骂。", type: 'E', weight: 1 },
+                    { text: "无奈地摇摇头，反手打开修图软件。把那辣眼睛的衣服颜色调成黑白，加上复古滤镜：“脸在江山在，我自己救！”", type: 'I', weight: 2 },
+                    { text: "盯着海报看了五分钟，成功给自己洗脑：“其实这种废土风也挺前卫的…主要是人长得帅，穿麻袋也好看。”", type: 'I', weight: 1 } 
+                ]
+            },
+            {
+                text: "8. 抢票大战开启！你早早充了高级会员拿到了特权码，结果开票倒计时结束，App页面疯狂转圈，再刷新时已经“无票”。这时候你会：",
+                options: [
+                    { text: "气到把手机扔沙发上！立刻去微博写小作文痛骂高会机制就是个割韭菜的笑话，发誓这辈子再也不交智商税。", type: 'E', weight: 2 },
+                    { text: "光速平复心情，立刻开启人脉雷达，在超话、二手平台和各大代拍群里高强度发帖求票，哪怕溢价也要去现场。", type: 'E', weight: 1 },
+                    { text: "长叹一口气接受现实。安慰自己省下来的高会费和门票钱能吃几顿好的，转头去开个视频会员准备躺被窝里看线上直播。", type: 'I', weight: 2 },
+                    { text: "有点失落，但在超话里刷到前线站姐已经到了场馆发回的热血应援图，觉得没去现场也能感受到这种美好的氛围。", type: 'I', weight: 1 } 
+                ]
+            },
+            {
+                text: "9. 如果偷偷翻开你的微博主页/小红书账号，最可能看到什么样的风景？",
+                options: [
+                    { text: "简直是个高产播报机！一天发十几条，对新物料的逐帧点评、打榜记录、还有跟别的粉丝的高强度激情互动。", type: 'E', weight: 2 },
+                    { text: "像个尽职尽责的“安利大户”，遇到绝美的直拍或者舞台，就会配上极其浮夸的彩虹屁文案疯狂转发。", type: 'E', weight: 1 },
+                    { text: "像个静谧的赛博树洞。基本不发原创动态，主页全是点赞的神仙同人文和高清美图，是个标准的潜水艇。", type: 'I', weight: 2 },
+                    { text: "非常克制且唯美。只有在他过生日，或者有什么重大节点时，才会发一张精心调色的图或一段走心的剪辑。", type: 'I', weight: 1 } 
+                ]
+            },
+            // 维度4：P(爆肝付出) vs S(治愈陪伴)
+            {
+                text: "10. 公司宣布下周将发售一本非常有纪念意义的新杂志实体刊，还附带单链销量解锁福利。你的行动指南是：",
+                options: [
+                    { text: "战斗的号角吹响了！省下大半个月的生活费也要多买几本冲销量，还要切十几个小号去广场做数据热场子！", type: 'P', weight: 2 },
+                    { text: "除了自己买了一本珍藏，还会主动帮散粉答疑解惑，或者给后援会的宣发帖子做美工排版出一份力。", type: 'P', weight: 1 },
+                    { text: "量力而行地买一本支持一下。觉得追星的本质是获得快乐，自己吃不饱饭去给爱豆冲销量大可不必。", type: 'S', weight: 2 },
+                    { text: "完全没打算买。反正等过两天超话里就会有“神仙太太”放出高清无码的扫描图，白嫖当壁纸一样美滋滋。", type: 'S', weight: 1 } 
+                ]
+            },
+            {
+                text: "11. 在这个充满了神仙剪辑手、画师、写手的同人圈大舞台里，你的真实身份是：",
+                options: [
+                    { text: "我就是那个在深夜爆肝的产出太太！为了卡对一个视频的鼓点，或者修好一张图的色调，我能熬到凌晨三点。", type: 'P', weight: 2 },
+                    { text: "虽然我技术不够硬，但我会学着用手机软件剪点好玩的表情包或者搞笑片段，为超话贡献一点我的力量。", type: 'P', weight: 1 },
+                    { text: "嗷嗷待哺的“看客大王”。每天最大的快乐就是躺在床上刷各种绝美产出，在评论区大喊“太太好腿，饿饿饭饭”。", type: 'S', weight: 2 },
+                    { text: "来无影去无踪的“幽灵点赞机”。看到喜欢的产出，连评论都懒得发，默默点个心收藏，深藏功与名。", type: 'S', weight: 1 } 
+                ]
+            },
+            {
+                text: "12. 终极灵魂拷问：回顾你在十八楼度过的这段光阴，你觉得追星给你带来了什么？",
+                options: [
+                    { text: "一种强烈的“共同创业感”。看到他从籍籍无名走到大舞台的中央，有我的汗水和打榜做出的贡献，成就感爆棚。", type: 'P', weight: 2 },
+                    { text: "一种共同进步的动力。看着他每天挥洒汗水不认输的样子，我也想在现实生活中努力发光，成为配得上他的粉丝。", type: 'P', weight: 1 },
+                    { text: "纯粹的治愈和情绪价值。他们纯真的笑容、少年感和兄弟情谊，能瞬间洗去我上了一天班/学积攒的疲惫。", type: 'S', weight: 2 },
+                    { text: "一种细水长流的平行时空陪伴。我不狂热也不焦虑，就像看着远方的一个小弟弟慢慢长大，岁月漫长，不慌不忙。", type: 'S', weight: 1 } 
+                ]
+            }
+        ];
+
+        const types = {
+            "AFEP": { 
+                name: "《养成系热血大女主》", 
+                tags: ["事业亲妈", "战斗力爆表", "用爱发电", "护盾"],
+                desc1: "你简直是饭圈里的定海神针！一入十八楼深似海，你把他当成了心尖上的宝。你不仅用极其充沛的情感爱着他，更为他的前途和舞台表现亲力亲为。打榜买专你永远冲在第一线，为了他的绝美舞台你会激动到大哭并疯狂产出安利。一旦有任何对他的不公（比如造型太丑、镜头太少、或者是粉圈突如其来的暗箭），你会立刻挺身而出带头维权，战斗力堪比斯巴达勇士。你的爱是炙热的、毫无保留的，甚至带着一种悲壮的献祭感。", 
+                desc2: "在日常追星中，你的情绪极度外化，看到他哭你会比他哭得更惨，看到他笑你的世界就亮了。你的核心驱动力是【母爱与拯救欲】。你见不得他受一点委屈，渴望通过自己实打实的金钱和数据投入，亲手将他托举到金字塔尖。对他而言，你不仅仅是粉丝，更是帮他披荆斩棘的合伙人。",
+                desc3: "【处方笺】热血虽好，但也要注意身体和钱包哦。有时候爱豆自己远比我们想象的坚强，偶尔放下数据和榜单，纯粹地欣赏一次他的舞台，你会发现追星也可以不那么紧绷。祝你的少年早日成王，也祝你在爱他的岁月里闪闪发光！",
+                feizong: "“真的非常感谢你们对孩子们的倾力支持。看到你们为了他们的前途这么拼命，公司也会更加努力，绝不辜负你们这份沉甸甸的爱。”"
+            },
+            "AFES": { 
+                name: "《浪漫的吟游诗人》", 
+                tags: ["超话喇叭", "彩虹屁大师", "情绪充沛", "小作文产出机"],
+                desc1: "你是情绪价值拉满的超话活跃分子！极其感性的你，有着敏锐的雷达，一点点物料的感动都能让你写出真情实感的小作文。你喜欢在社交平台上激情表达、向全世界安利你推的可爱与进步，你用极其华丽或真诚的辞藻记录他成长的每一个瞬间。但在花钱和做枯燥数据这件事上，你懂得量力而行，不被资本的洗脑包裹挟。", 
+                desc2: "你的饭圈性格是极具感染力的“气氛渲染者”。你的核心驱动力是【分享欲与情感共振】。爱意如果不表达出来，对你来说就不完整。你渴望在饭圈找到同频共振的人，通过热烈的讨论和分享，将追星的快乐放大十倍。你用源源不断的文字为他筑起了一座充满爱的舆论城堡。",
+                desc3: "【处方笺】你本身就是极好的应援，是超话里最让人感到温暖的存在。继续保持这种“重情绪、轻内耗”的状态，你是最能感染路人入坑的神仙粉丝。祝你永远保有这份浪漫的诗意，祝你的爱意永远能得到热烈的回响！",
+                feizong: "“每次看到你们在超话写的走心长文，我们都很受触动。这些文字是孩子们成长的最好见证，也是他们前行路上最温暖的光。”"
+            },
+            "AFIP": { 
+                name: "《沉默的氪金大佬/肝帝》", 
+                tags: ["隐形翅膀", "人狠话不多", "真金白银", "深情陪伴"],
+                desc1: "你是真正的“低调做人，高调做事”。你极其厌恶广场上的吵闹，也不爱在人前高调表达，微博主页可能比你的脸还干净，甚至连头像都是默认的。但只要是他出的新歌、新杂志，或者是遇到了需要销量的生死关头，你往往是默默甩出天价订单或熬夜切号做数据的中坚力量。你从不跟人争论，只用实绩说话。", 
+                desc2: "虽然你表现得无比冷静，但内心深处其实非常柔软。你的核心驱动力是【深沉的守护欲】。你觉得千言万语都不如一张实打实的销量订单来得实在。你不喜欢被粉圈那些虚假的社交绑定，你只在乎远方的那个少年过得好不好、有没有进步。你的爱是深海里的暗流，静谧却有着极其恐怖的能量。",
+                desc3: "【处方笺】你是他登顶路上最隐形也最坚实的翅膀，也是整个饭圈的底气。但偶尔也可以试着在超话里分享一下你的喜悦，你的声音比你想象中更有力量。祝你的每一次付出都能转化为他王冠上的宝石，祝你深情的守候终有璀璨的回报！",
+                feizong: "“很多像你一样低调的粉丝，一直在默默用行动支持着孩子们。这份沉甸甸的底气，是我们最宝贵的财富。”"
+            },
+            "AFIS": { 
+                name: "《治愈系云养崽》", 
+                tags: ["岁月静好", "白嫖有理", "情绪稳定", "纯爱战神"],
+                desc1: "哪怕外界再多喧嚣，什么屠广场、什么抢C位，你也是守在他超话里最岁月静好的那一个。你白嫖得理直气壮，只在看到他笑时跟着傻乐。无论是打榜被超，还是粉圈互撕，都无法影响你第二天睡到自然醒。你把追星变成了一种纯净无暇的陪伴，就像在自己的电子后花园里种了一棵树，只享受浇水施肥的快乐。", 
+                desc2: "你的性格属于绝对的“避世防御型”。你的核心驱动力是【纯粹的情感索取与治愈】。现实生活已经很累了，你坚决不让粉圈的焦虑污染你的生活。对你而言，十八楼就是一个平行时空的电子桃花源，看着那个小土豆慢慢长成大帅哥，你就觉得很幸福了。",
+                desc3: "【处方笺】你掌握了追星的最高境界——“不内耗”。保持这种云淡风轻的心态，这漫长的养成路，你能比任何人走得都久、走得都快乐。祝你的电子乌托邦永远晴空万里，祝你和他都能在平行时空里各自安好！",
+                feizong: "“能为大家带来治愈和快乐，就是养成系的意义。希望十八楼能一直是你疲惫生活里那个温暖的避风港。”"
+            },
+            "ACEP": { 
+                name: "《十八楼大管家》", 
+                tags: ["家族魂", "端水大师", "统筹核心", "大局观"],
+                desc1: "你身上流淌着最正统的十八楼血液！你极其博爱，被他们从小一起长大的羁绊深深打动，谁挨骂了你都心疼。你拥有很强的产出和组织能力，不管是家族大考、运动会还是跨代际互动，你都能用绝美的群像混剪或热血小作文把大家凝聚在一起，为整个家族操碎了心。你就像个不管刮风下雨都在缝补屋顶的大家长。", 
+                desc2: "你的性格中充满了博爱与责任感。你的核心驱动力是【群像羁绊与宏大叙事】。你爱的不仅是某一个人，而是“时代峰峻”这个长达十年的养成系乌托邦。你痴迷于那种“一群人为了同一个梦想挥洒汗水”的宿命感，你渴望看到大家其乐融融、共同顶峰相见的美好结局。",
+                desc3: "【处方笺】大管家辛苦了！你的存在是维系家族魂不可或缺的粘合剂，你的群像产出看哭过无数人。但端水很累，偶尔放下包袱，只注视其中一朵花也是一种放松。祝你永远热泪盈眶，祝这个家族如你所愿、繁花似锦！",
+                feizong: "“家族的传承离不开你们这些‘团粉’的包容。看到你们这么用心地维护大家庭的氛围，我真的很感动。”"
+            },
+            "ACES": { 
+                name: "《前排吃瓜喜剧人》", 
+                tags: ["气氛担当", "快乐至上", "什么都嗑", "冲浪达人"],
+                desc1: "你是各种群里和超话的绝对气氛担当！大势竹马你嗑，全员大乱炖你也要看，修罗场你更是不愿错过一秒。你感性且快乐，看到大家互怼你会笑得满地找头，看到他们流泪你也会跟着酸鼻子。你积极表达、四处安利、造梗无数，但绝不被做数据和氪金绑架，活得像一只快乐穿梭在瓜田里的猹。", 
+                desc2: "你是一个极其优秀的“乐子人”。你的核心驱动力是【娱乐至死与化学反应】。你最喜欢看人与人之间奇妙的互动和火花，你把追星当成了一档超大型的养成喜剧连续剧，每天准点收看，获取源源不断的多巴胺，用极高的娱乐精神化解粉圈的腥风血雨。",
+                desc3: "【处方笺】你是整个粉圈里最能感受到养成系快乐的存在。只要你还在哈哈哈，十八楼的天就不会塌。继续用你的幽默感去感染世界吧！祝你的每一天都有新瓜吃，祝你的追星之旅永远充满笑声！",
+                feizong: "“饭圈就该多一点像你这样开朗的粉丝。看到你们把物料盘得这么有趣，孩子们私下里看到了也会觉得很开心。”"
+            },
+            "ACIP": { 
+                name: "《十八楼的神笔马良》", 
+                tags: ["神仙太太", "博爱产出", "用爱发电", "造梦者"],
+                desc1: "你是默默填饱大家肚子的无差别产出机器！极其博爱且高产，完全不受粉圈吵闹的影响。外界在为番位争吵，你却在用极大的热情熬夜剪绝美群像、画家族大乱炖的温馨插画、或者写几万字的群像大群像文。你来无影去无踪，只在超话留下一部部神级作品，深藏功与名。", 
+                desc2: "你的性格极具艺术气息和包容度。你的核心驱动力是【创作欲与审美表达】。你拥有一双善于发现美的眼睛，你不仅是在追星，更是在用他们的素材进行二创艺术。十八楼的跌宕起伏是你源源不断的灵感缪斯，你用才华织就了一个个温柔的梦境。",
+                desc3: "【处方笺】太太受我一拜！你用爱发电，不争不抢，是无数深陷焦虑的散粉心中治愈的白月光。请一定保护好你的颈椎、眼睛和头发，不要过度熬夜哦。祝你才思泉涌，祝你的画笔永远能描绘出最绚烂的青春！",
+                feizong: "“你们的才华让这个圈子变得更加美好。每一幅画、每一支视频都是在为孩子们的青春留下最璀璨的注解。”"
+            },
+            "ACIS": { 
+                name: "《内娱佛系旅行者》", 
+                tags: ["云游散步", "走马观花", "零内耗", "随缘点赞"],
+                desc1: "你把十八楼当成心灵游乐园，随时来随缘走。你爱着这群美好的少年，但永远保持着让人舒服的距离。什么CP都吃一口，什么神仙舞台都看一眼，但你绝不会因为数据内耗，也不执着于花钱买周边，更不会下场撕逼。你就像一个漫步在花园里的旅客，只带走沿途的花香和美景。", 
+                desc2: "你是一个深谙“距离产生美”的智者。你的核心驱动力是【毫无压力的陪伴体验】。你不想在网络世界建立深度羁绊，你只需要他们在你疲惫或无聊时提供一些视觉和情感上的点缀。你的情绪屏障非常厚，绝不让粉圈的疯狂反噬到你的三次元生活。",
+                desc3: "【处方笺】你达到了很多人梦寐以求的“松弛感”。看着一代代小孩在练习室里挥洒汗水，你在这种纯粹的陪伴中找寻属于自己的青春治愈。祝你在这场盛大的赛博旅行中永远自由自在，永远不染尘埃！",
+                feizong: "“追星本来就应该是一件轻松快乐的事。很开心十八楼能成为你偶尔驻足欣赏的风景，随时欢迎回来看看。”"
+            },
+            "OFEP": { 
+                name: "《狼性创业合伙人》", 
+                tags: ["事业粉", "清醒慕强", "数据为王", "战略眼光"],
+                desc1: "你是清醒且行动力爆表的事业粉！你不盲目沉溺于深夜物料里煽情的眼泪，你更关注他的舞台实力进步、资源获取和商业价值变现。为了让他走得更高，你打投氪金绝不手软，并在关键时刻理智地组织大家做数据、控评反黑，绝不浪费一兵一卒，手腕极其铁血。", 
+                desc2: "你在饭圈的形象宛如一个运筹帷幄的CEO。你的核心驱动力是【慕强心理与养成成就感】。你把追星当成了一场盛大的养成系风投。你要亲眼看着你投资的这支“潜力股”冲上云霄，用实绩打烂所有质疑者的脸，这种世俗意义上的成功带给你极大的爽感。",
+                desc3: "【处方笺】你是他最可靠的创业搭档，用数据为他铺平未来的路，有你在前线就是最大的定心丸。但偶尔也可以停下脚步，去看看他沿途风景里的那些小美好。祝你们早日登顶内娱，祝你的眼光永远毒辣精准！",
+                feizong: "“你们的高标准严要求，是鞭策公司和艺人不断进步的动力。谢谢你们用行动帮他打拼出更广阔的舞台。”"
+            },
+            "OFES": { 
+                name: "《毒舌又温柔的导师》", 
+                tags: ["舞台粉", "客观锐评", "拒绝韭菜", "清醒独立"],
+                desc1: "你是饭圈里的清流兼冷面评论员。你能一眼看穿各种综艺剧本和公司的虐粉策划。你最喜欢在社交平台输出冷静客观的舞台复盘和局势分析，既能用几千字把他的高光时刻夸上天，也毫不留情地指出他的不足和短板。你拒绝被感性裹挟消费，绝不为公司的烂周边盲目买单。", 
+                desc2: "你的性格极度理智、挑剔且有着极高的审美标准。你的核心驱动力是【对专业度的追求与独立思考】。你爱的不是一个被包装好的完美洋娃娃，而是一个有血有肉、必须不断进化的艺人。你不屑于饭圈盲目无脑的彩虹屁，你更相信理性和鞭策的力量。",
+                desc3: "【处方笺】你主打一个众人皆醉我独醒的清醒陪伴，你高质量的分析帖是超话里的干货瑰宝，是引导饭圈正向审美的中坚力量。祝你能见证他破茧成蝶的最强蜕变，祝你永远保持思考的锋芒！",
+                feizong: "“良药苦口。你们每一次理智的分析和批评，公司都有认真看。有你们这样严格的监督，孩子们才能不骄不躁地走得更远。”"
+            },
+            "OFIP": { 
+                name: "《莫得感情的做票机》", 
+                tags: ["数据架构师", "高效冷酷", "闭麦抡博", "实绩至上"],
+                desc1: "你是理智且高效的终极唯数据派。平时几乎看不到你在超话里煽情发言，或者参与无意义的情绪宣泄。但在需要拉开差距的关键榜单、或者是对家来犯的黑评区，总有你冷静切号、疯狂抡博的残影。你不迷恋物料里虚无的幻象，只用极其规律的作息为他堆砌冰冷但管用的实绩。", 
+                desc2: "在粉圈，你是最沉默但也最令人畏惧的齿轮。你的核心驱动力是【规则掌控与结果导向】。你深知十八楼残酷的生存法则：在这个论资排辈的楼里，只有实打实的数据能给他底气。你把做数据当成了通关打怪，享受精密计算和掌控进度的快感。",
+                desc3: "【处方笺】致敬无情的数据机器！是你用日复一日的枯燥劳动为他筑起了坚不可摧的城墙。但除了冰冷的数字，那个在屏幕前努力的少年同样也需要你偶尔的柔软和回应。祝你的每一次点击都能化作他未来的星光，祝你披荆斩棘所向披靡！",
+                feizong: "“那些漂亮的数据背后，是你们日复一日的坚持。谢谢你们用这种安静却充满力量的方式，守护着他的荣誉。”"
+            },
+            "OFIS": { 
+                name: "《人间清醒白嫖党》", 
+                tags: ["颜控鉴赏", "及时行乐", "铁壁防御", "绝对理智"],
+                desc1: "你是最高级别、最无可撼动的理智白嫖党。你非常清楚自己只是来消遣的，你极其欣赏他的神仙颜值、逆天大长腿或某一绝美舞台表现，但不产生一丝一毫过度的情感依赖。只要他没物料了或者惹你不爽了，你可以立刻关掉软件几个月不上线。你保持着一种极其成熟且冷酷的距离感。", 
+                desc2: "你的性格是绝对的“利己主义”防御者。你的核心驱动力是【审美愉悦与边界感】。你将现实生活与网络追星切割得泾渭分明，只索取美好带来的情绪价值，绝不允许任何粉圈的负能量、虐粉套路和集资话术跨过你的心理防线。谁也别想PUA你一分钱。",
+                desc3: "【处方笺】活得轻松又自在的你，简直是粉圈的防沉迷教科书，你的精神内核极其强大。保持这份潇洒，继续在这个光怪陆离的赛博世界里做个快乐的看客吧。祝你永远不被世俗裹挟，祝你只享受追星最纯粹的美好！",
+                feizong: "“懂得把生活和娱乐分开是很难得的清醒。希望他在舞台上的每一次发光，都能为你带来纯粹的视觉享受。”"
+            },
+            "OCEP": { 
+                name: "《时代峰峻荣誉董事》", 
+                tags: ["战略大管家", "上帝视角", "统筹规划", "事业批"],
+                desc1: "纵观全局的理智统筹者。你不仅博爱，而且对公司的代际更替、养成系的发展脉络规划了如指掌。你会为了维持这种宏大的生态去产出高质量的科普文章、有策略地分配资源和精力。你冷静地爱着这个家族，看着一代代传承，仿佛你手里拿的不是应援棒，而是公司的战略企划书。", 
+                desc2: "你的性格极具领导力和宏大叙事的掌控欲。你的核心驱动力是【生态构建与宏大掌控感】。你痴迷于观察一个长达十年的养成系帝国是如何运转的，你把自己当成了这个帝国里负责添砖加瓦的高管，享受分析局势和指点江山的战略快感。",
+                desc3: "【处方笺】荣誉董事您好！你的大局观和干货科普能给许多迷茫的新粉指明方向。不过别忘了，少年们的成长不是死板的企划书，偶尔也要允许一点“脱轨”的小浪漫发生。祝这栋楼如你所愿基业长青，祝你的谋划都能成为现实！",
+                feizong: "“每次看到你们对公司发展的长篇建言，我都很惊讶你们的远见。谢谢你们对这栋楼倾注的心血和期盼。”"
+            },
+            "OCES": { 
+                name: "《福尔摩斯式吃瓜群众》", 
+                tags: ["内娱观察员", "吃瓜第一线", "一针见血", "乐子人"],
+                desc1: "极其理智且博爱的旁观者，你把十八楼当成一个绝佳的社会学和心理学观察站。有新鲜的群像物料就看，有修罗场的瓜就吃。你几乎一毛不拔，但输出观点时永远逻辑清晰、一针见血，经常能看透深藏的粉圈套路和公司诡计。你喜欢这种抽离在狂热之外的看戏感。", 
+                desc2: "你的性格极其聪慧且带有几分狡黠。你的核心驱动力是【求知欲与智力优越感】。你不愿意成为被资本洗脑的乌合之众，你喜欢拆解人际关系的套路、分析背后的资本逻辑，享受“清醒吃瓜”和“预判局势”的智力乐趣。",
+                desc3: "【处方笺】内娱不能没有你的犀利锐评！你就像个拿着爆米花前排吃瓜的福尔摩斯，你的吐槽经常让人拍案叫绝。但小心吃瓜别吃太深，避免被无意义的阴谋论反噬。祝你永远保有清醒的头脑，祝你每天都有精彩的乐子看！",
+                feizong: "“你们的敏锐度总是能让我们警醒。有这种理性的声音在，也能帮助整个圈子少一点盲目，多一份清醒。”"
+            },
+            "OCIP": { 
+                name: "《冰冷的时光图书馆长》", 
+                tags: ["考据狂魔", "考古专家", "物料仓鼠", "默默搬砖"],
+                desc1: "你是粉圈里的数字文物保护者。你不参与日常的吵闹，但你的硬盘里装满了历代所有的绝版物料、未公开直拍和古早纪录片。当别人在为一时的意气之争吵得不可开交时，你正默默地给几个G的文件打上标签分类。你需要时随时能甩出最锤的证据或最感人的考古记录。", 
+                desc2: "你的性格极其严谨、有条理且极其念旧。你的核心驱动力是【记录与见证】。你认为人的记忆是靠不住的，唯有影像和文字能证明这群少年真真切切地挥洒过青春。你不屑于饭圈的狂热表达，你用整理和保存来完成你深沉的爱意。",
+                desc3: "【处方笺】向最伟大的时光馆长致敬！是你留住了十八楼流逝的岁月，让每一个后来者都有迹可循。整理资料很伤眼睛，记得多做眼保健操哦。祝你珍藏的青春永远鲜活，祝岁月对你和他们都温柔以待！",
+                feizong: "“十年树木，感谢你们替公司和孩子们留存了那么多珍贵的成长记忆。这份长情，是支撑大家走下去的力量。”"
+            },
+            "OCIS": { 
+                name: "《赛博街溜子》", 
+                tags: ["薛定谔的粉", "无痛追星", "精神离职", "随风飘摇"],
+                desc1: "你是十八楼里最神秘的薛定谔粉丝。你可能同时混迹于二代、三代、四代的不同超话，今天觉得这个弟弟帅，明天觉得那个弟弟萌，随手点个赞就跑，从不留下任何羁绊。你永远在“脱坑边缘”和“垂直入坑”之间反复横跳，谁也抓不住你。", 
+                desc2: "你的性格就是一阵不受拘束的风。你的核心驱动力是【新鲜感与绝对自由】。你拒绝任何形式的绑定——不绑定期望、不绑定金钱、甚至不绑定固定的人。你把内娱当成了一个巨大的盲盒机，永远只享受拆开那一瞬间的快乐，不喜欢了就立刻扔掉。",
+                desc3: "【处方笺】你是真正把“拿得起放得下”玩明白的人。这种随风飘摇的姿态，让你在这场充满执念的游戏里永远处于不败之地。祝你在未来的赛博冲浪里永远自由畅快，祝你永远能在下一秒遇到心动的惊喜！",
+                feizong: "“能为大家带来片刻的轻松也是一种缘分。只要十八楼还能吸引你的目光，大门就永远为你敞开。”"
+            }
+        };
+
+        let currentQuestion = 0;
+        let scores = { A: 0, O: 0, C: 0, F: 0, E: 0, I: 0, P: 0, S: 0 };
+
+        function startQuiz() {
+            document.getElementById('home-section').style.display = 'none';
+            document.getElementById('quiz-section').style.display = 'flex';
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById('question-text').innerText = q.text;
+            document.getElementById('progress').style.width = `${(currentQuestion / questions.length) * 100}%`;
+            
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+            
+            // 打乱选项顺序以增加趣味性
+            const shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
+            
+            shuffledOptions.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option';
+                btn.innerText = opt.text;
+                btn.onclick = () => selectOption(opt.type, opt.weight);
+                container.appendChild(btn);
+            });
+        }
+
+        function selectOption(type, weight) {
+            scores[type] += weight;
+            currentQuestion++;
+            
+            if (currentQuestion < questions.length) {
+                renderQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('quiz-section').style.display = 'none';
+            document.getElementById('result-section').style.display = 'block';
+            
+            const dim1 = scores.A >= scores.O ? 'A' : 'O';
+            const dim2 = scores.C >= scores.F ? 'C' : 'F';
+            const dim3 = scores.E >= scores.I ? 'E' : 'I';
+            const dim4 = scores.P >= scores.S ? 'P' : 'S';
+            
+            const resultCode = `${dim1}${dim2}${dim3}${dim4}`;
+            const resultData = types[resultCode];
+            
+            // 填充剧本名
+            document.getElementById('result-name').innerText = resultData.name;
+            
+            // 填充标签
+            const tagsContainer = document.getElementById('result-tags');
+            tagsContainer.innerHTML = '';
+            resultData.tags.forEach(tag => {
+                const tagSpan = document.createElement('span');
+                tagSpan.className = 'tag';
+                tagSpan.innerText = '#' + tag;
+                tagsContainer.appendChild(tagSpan);
+            });
+            
+            // 填充深度分析文案
+            document.getElementById('result-desc1').innerText = resultData.desc1;
+            document.getElementById('result-desc2').innerText = resultData.desc2;
+            document.getElementById('result-desc3').innerText = resultData.desc3;
+            document.getElementById('result-feizong').innerText = "飞总推着眼镜走过来说：" + resultData.feizong;
+            
+            // 更新雷达盒
+            document.getElementById('dim-1').innerText = dim1 === 'A' ? 'A (泪腺发达)' : 'O (铁壁理智)';
+            document.getElementById('dim-2').innerText = dim2 === 'C' ? 'C (端水博爱)' : 'F (雷达锁定)';
+            document.getElementById('dim-3').innerText = dim3 === 'E' ? 'E (超话喇叭)' : 'I (潜水雷达)';
+            document.getElementById('dim-4').innerText = dim4 === 'P' ? 'P (肝肾大户)' : 'S (云养看客)';
+        }
+    </script>
+</body>
+</html>
